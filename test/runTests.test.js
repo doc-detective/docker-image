@@ -16,7 +16,9 @@ describe("Run tests sucessfully", function () {
       const result = JSON.parse(
         fs.readFileSync(outputFile, { encoding: "utf8" })
       );
+      console.log(result);
       assert.equal(result.summary.specs.fail, 0);
+      assert.equal(result.summary.contexts.skipped, 0);
       fs.unlinkSync(outputFile);
     });
   });
