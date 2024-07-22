@@ -4,9 +4,9 @@
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "test": "mocha test/*.test.js",
-    "build": "docker build --load -t hawkeyexl/doc-detective:dev .",
-    "rebuild": "docker build --no-cache --load -t hawkeyexl/doc-detective:dev .",
-    "watch": "nodemon --exec \"npm run build\" --ext js --ignore dist/",
+    "build": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -t hawkeyexl/doc-detective:dev . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
+    "rebuild": "npm run build -- --no-cache",
+    "watch": "nodemon --exec \"npm run rebuild && npm t\" --ext js --ignore dist/",
     "publish": "docker push hawkeyexl/doc-detective:dev"
   },
   "repository": {
