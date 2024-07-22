@@ -1,28 +1,28 @@
-FROM ubuntu:20.04 AS system
-LABEL authors="Doc Detective"
+FROM ubuntu:24.04 AS system
+ARG DOC_DETECTIVE_VERSION=latest
+ARG PACKAGE_VERSION
 
-# built-in packages
+LABEL authors="Doc Detective"
+LABEL description="The official Docker image for Doc Detective. Keep your docs accurate with ease."
+LABEL version=$PACKAGE_VERSION
+LABEL maintainer="hawkeyexl@gmail.com"
+LABEL license="MIT"
+LABEL source="https://github.com/doc-detective/docker-image"
+LABEL documentation="https://doc-detective.com"
+LABEL vendor="Doc Detective"
+
+# Set environment container to trigger container-based behaviors
+ENV CONTAINER=true
+
+# Install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update \
     && apt install -y --no-install-recommends software-properties-common curl \
-    # apache2-utils \
-    && apt update \
-    && apt install -y --no-install-recommends --allow-unauthenticated \
-        # supervisor nginx sudo net-tools zenity xz-utils \
-        # dbus-x11 x11-utils alsa-utils \
-        # mesa-utils libgl1-mesa-dri \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
-# install debs error if combine together
-# RUN apt update \
-#     && apt install -y --no-install-recommends --allow-unauthenticated \
-#         xvfb x11vnc \
-#         vim-tiny firefox ttf-ubuntu-font-family ttf-wqy-zenhei  \
-#     && apt autoclean -y \
-#     && apt autoremove -y \
-#     && rm -rf /var/lib/apt/lists/*
 
+# Install Google Chrome
 RUN apt update \
     && apt install -y gpg-agent \
     && curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
@@ -31,36 +31,19 @@ RUN apt update \
     && rm google-chrome-stable_current_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
 
-# RUN apt update \
-#     && apt install -y --no-install-recommends --allow-unauthenticated \
-#         lxde gtk2-engines-murrine gnome-themes-standard gtk2-engines-pixbuf gtk2-engines-murrine arc-theme \
-#     && apt autoclean -y \
-#     && apt autoremove -y \
-#     && rm -rf /var/lib/apt/lists/*
-# # FFMPEG
-# RUN apt update \
-#     && apt install -y --no-install-recommends --allow-unauthenticated \
-#         ffmpeg \
-#     && rm -rf /var/lib/apt/lists/* \
-#     && mkdir /usr/local/ffmpeg \
-#     && ln -s /usr/bin/ffmpeg /usr/local/ffmpeg/ffmpeg
 # Node.js
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs
 
 # Install Doc Detective from NPM
-RUN npm install -g doc-detective@dev
+RUN npm install -g doc-detective@$DOC_DETECTIVE_VERSION
 
-# # Set environment container to trigger container-based behaviors
-# # TODO: Update scripts to override certain config options to static container values (for example, -i and -o should always map to the same directories).
-ENV CONTAINER=true
-
-# # Create app directory
+# Create app directory
 WORKDIR /app
 
-# # Add entrypoint command base
+# Add entrypoint command base
 ENTRYPOINT [ "npx", "doc-detective" ]
 
-# # Set default command
+# Set default command
 # CMD [ "/bin/bash" ]
 CMD [ "" ]
