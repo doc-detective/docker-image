@@ -1,6 +1,6 @@
 {
   "name": "doc-detective-docker-image",
-  "version": "0.0.1-alpha.0",
+  "version": "3.0.0-dev.0",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "test": "mocha test/*.test.js",
@@ -21,14 +21,14 @@
     "docs"
   ],
   "author": "Manny Silva",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "bugs": {
     "url": "https://github.com/doc-detective/docker-image/issues"
   },
   "homepage": "https://doc-detective.com",
   "devDependencies": {
-    "chai": "^5.1.1",
-    "mocha": "^10.7.0",
-    "nodemon": "^3.1.4"
+    "chai": "^5.2.0",
+    "mocha": "^11.1.0",
+    "nodemon": "^3.1.9"
   }
 }
