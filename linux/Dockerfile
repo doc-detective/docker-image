@@ -19,7 +19,7 @@ ENV CONTAINER=true
 # Install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update \
-    && apt install -y --no-install-recommends software-properties-common curl \
+    && apt install -y --no-install-recommends software-properties-common curl xz-utils \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
