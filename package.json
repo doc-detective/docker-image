@@ -4,10 +4,11 @@
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "test": "mocha test/*.test.js",
-    "build": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t ghcr.io/doc-detective/doc-detective:latest . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
+    "build": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t hawkeyexl/doc-detective:latest . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
+    "postbuild": "npm run test",
     "rebuild": "npm run build -- --no-cache",
     "watch": "nodemon --exec \"npm run rebuild && npm t\" --ext js --ignore dist/",
-    "publish": "docker push ghcr.io/doc-detective/doc-detective:latest"
+    "publish": "docker push hawkeyexl/doc-detective:latest"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
   "homepage": "https://doc-detective.com",
   "devDependencies": {
     "chai": "^5.2.0",
+    "express": "^5.1.0",
     "mocha": "^11.1.0",
     "nodemon": "^3.1.10"
   }
