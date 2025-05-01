@@ -1,15 +1,14 @@
 {
-  "name": "doc-detective-container-images",
-  "version": "3.0.0-dev.0",
+  "name": "doc-detective-docker-image",
+  "version": "3.0.2",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "test": "mocha test/*.test.js",
-    "build": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t hawkeyexl/doc-detective:latest . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
+    "build": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t docdetective/docdetective:latest -t docdetective/docdetective:$PACKAGE_VERSION . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
     "postbuild": "npm run test",
     "rebuild": "npm run build -- --no-cache",
-    "postrebuild": "npm run test",
-    "watch": "nodemon --exec \"npm run rebuild && npm t\" --ext js --ignore dist/",
-    "publish": "docker push hawkeyexl/doc-detective:latest"
+    "watch": "nodemon --exec \"npm run rebuild\" --ext js --ignore dist/",
+    "publish": "PACKAGE_VERSION=$(jq -r .version package.json) && docker push docdetective/docdetective:latest && docker push docdetective/docdetective:$PACKAGE_VERSION"
   },
   "repository": {
     "type": "git",
@@ -31,7 +30,7 @@
   "devDependencies": {
     "chai": "^5.2.0",
     "express": "^5.1.0",
-    "mocha": "^11.1.0",
+    "mocha": "^11.2.2",
     "nodemon": "^3.1.10"
   }
 }
