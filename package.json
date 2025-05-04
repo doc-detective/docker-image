@@ -1,6 +1,6 @@
 {
   "name": "doc-detective-docker-image",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "test": "mocha test/*.test.js",

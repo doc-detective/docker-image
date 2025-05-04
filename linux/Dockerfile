@@ -1,4 +1,4 @@
-FROM node:23-slim AS system
+FROM node:22-slim AS system
 ARG PACKAGE_VERSION
 ARG DOC_DETECTIVE_VERSION=latest
 
