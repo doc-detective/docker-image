@@ -64,44 +64,9 @@ You can pass any Doc Detective arguments to the container:
 docker run --rm -v .:/app docdetective/docdetective --input tests.spec.json --output results.json
 ```
 
-## Examples
-
-### Run Tests and Save Results
-
-Run tests and save the results to a JSON file in your local directory:
-
-```bash
-docker run --rm -v .:/app docdetective/docdetective --output testResults.json
-```
-
-### Test API Documentation
-
-Test your API docs stored in the `api-docs` directory:
-
-```bash
-docker run --rm -v ./api-docs:/app docdetective/docdetective --input api-tests.spec.json
-```
-
-### GitHub Actions Integration
-
-```yaml
-name: Test Documentation
-on: [push, pull_request]
-jobs:
-  test-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Doc Detective Tests
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/app docdetective/docdetective
-```
-
 ## Docker Tags
 
 - `latest`: The most recent stable release
-- `x.y.z`: Specific version releases
-- `edge`: Latest development build
 
 ## Build the Image Locally
 
@@ -110,7 +75,7 @@ If you want to build the Docker image locally:
 ```bash
 git clone https://github.com/doc-detective/docker-image.git
 cd docker-image/linux
-docker build -t docdetective/docdetective:local .
+npm run build
 ```
 
 ## License
