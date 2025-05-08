@@ -4,9 +4,9 @@
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "test": "mocha test/*.test.js",
-    "build": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t docdetective/docdetective:latest -t docdetective/docdetective:$PACKAGE_VERSION . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
+    "build": "npm run build-linux",
+    "build-linux": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t docdetective/docdetective:latest -t docdetective/docdetective:$PACKAGE_VERSION . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
     "postbuild": "npm run test",
-    "rebuild": "npm run build -- --no-cache",
     "watch": "nodemon --exec \"npm run rebuild\" --ext js --ignore dist/",
     "prepush": "npm run build",
     "push": "PACKAGE_VERSION=$(jq -r .version package.json) && docker push docdetective/docdetective:latest && docker push docdetective/docdetective:$PACKAGE_VERSION"
