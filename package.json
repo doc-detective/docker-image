@@ -8,7 +8,8 @@
     "postbuild": "npm run test",
     "rebuild": "npm run build -- --no-cache",
     "watch": "nodemon --exec \"npm run rebuild\" --ext js --ignore dist/",
-    "publish": "PACKAGE_VERSION=$(jq -r .version package.json) && docker push docdetective/docdetective:latest && docker push docdetective/docdetective:$PACKAGE_VERSION"
+    "prepush": "npm run build",
+    "push": "PACKAGE_VERSION=$(jq -r .version package.json) && docker push docdetective/docdetective:latest && docker push docdetective/docdetective:$PACKAGE_VERSION"
   },
   "repository": {
     "type": "git",
