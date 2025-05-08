@@ -21,16 +21,17 @@ FROM node:22-slim AS runtime
 ARG PACKAGE_VERSION
 ARG DOC_DETECTIVE_VERSION=latest
 
-LABEL authors="Doc Detective"
-LABEL description="The official Docker image for Doc Detective. Keep your docs accurate with ease."
-LABEL version=$PACKAGE_VERSION
-LABEL maintainer="hawkeyexl@gmail.com"
-LABEL license="AGPL-3.0"
-LABEL homepage="https://www.doc-detective.com"
-LABEL repository="https://github.com/doc-detective/docker-image"
-LABEL source="https://github.com/doc-detective/docker-image"
-LABEL documentation="https://www.doc-detective.com"
-LABEL vendor="Doc Detective"
+# All labels in a single layer to reduce image size
+LABEL authors="Doc Detective" \
+    description="The official Docker image for Doc Detective. Keep your docs accurate with ease." \
+    version=$PACKAGE_VERSION \
+    maintainer="manny@doc-detective.com" \
+    license="AGPL-3.0" \
+    homepage="https://www.doc-detective.com" \
+    repository="https://github.com/doc-detective/docker-image" \
+    source="https://github.com/doc-detective/docker-image" \
+    documentation="https://www.doc-detective.com" \
+    vendor="Doc Detective"
 
 # Set environment container to trigger container-based behaviors
 ENV CONTAINER=true
@@ -43,7 +44,6 @@ RUN apt update \
     libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libx11-6 libx11-xcb1 libxcb1 \
     libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 \
     libxtst6 wget xdg-utils \
-    && apt install -y gpg-agent \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
