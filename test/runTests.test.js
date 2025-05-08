@@ -43,7 +43,7 @@ describe("Run tests sucessfully", async function () {
   it("All specs pass", async () => {
     return new Promise((resolve, reject) => {
       const runTests = exec(
-        `docker run -v ${artifactPath}:/app docdetective/docdetective:latest runTests -c ./config.json -i . -o ./results.json`
+        `docker run --rm -v ${artifactPath}:/app docdetective/docdetective:latest runTests -c ./config.json -i . -o ./results.json`
       );
       
       runTests.stdout.on("data", (data) => {
