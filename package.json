@@ -1,12 +1,13 @@
 {
   "name": "doc-detective-docker-image",
-  "version": "3.0.4",
+  "version": "3.0.4-builder.0",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
-    "watch-linux": "nodemon --exec \"npm run build-linux --no-cache\" --ext js --ignore dist/",
+    "watch-linux": "nodemon --exec \"npm run build-linux-dev --no-cache\" --ext js,Dockerfile --ignore dist/",
     "test": "mocha test/*.test.js",
     "build": "npm run build-linux",
-    "build-linux": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t docdetective/docdetective:latest -t docdetective/docdetective:$PACKAGE_VERSION -t docdetective/docdetective:$PACKAGE_VERSION-linux . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
+    "build-linux": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux-base.Dockerfile -t docdetective/docdetective:latest -t docdetective/docdetective:$PACKAGE_VERSION -t docdetective/docdetective:$PACKAGE_VERSION-linux . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
+    "build-linux-dev": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux-base.Dockerfile -t docdetective/docdetective:dev . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
     "postbuild": "npm run test",
     "prepush": "npm run build",
     "push": "npm run push-linux",
