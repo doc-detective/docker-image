@@ -1,9 +1,10 @@
 {
   "name": "doc-detective-docker-image",
-  "version": "3.0.2",
+  "version": "3.0.4-windows.0",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "test": "mocha test/*.test.js",
+    "build-windows": "$Env:DOCKER_BUILDKIT=0; docker build -f ./windows.Dockerfile -t docdetective/docdetective:windows-latest -t docdetective/docdetective:windows . --build-arg PACKAGE_VERSION=3.0.4",
     "build": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux/Dockerfile -t docdetective/docdetective:latest -t docdetective/docdetective:$PACKAGE_VERSION . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
     "build:windows": "$Env:DOCKER_BUILDKIT=0; docker build -f ./windows/Dockerfile -t docdetective/docdetective:windows-latest . --build-arg PACKAGE_VERSION=$Env:PACKAGE_VERSION",
     "postbuild": "npm run test",
