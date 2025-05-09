@@ -18,7 +18,7 @@ if (process.platform === "win32") {
   envVariables.DOCKER_BUILDKIT = 0;
   // Pull the latest Windows base image
   console.log("Pulling Windows base image...");
-  execSync("mcr.microsoft.com/windows:ltsc2019", {
+  execSync("docker pull mcr.microsoft.com/windows:ltsc2019", {
     stdio: "inherit",
   });
 } else if (process.platform === "linux") {
