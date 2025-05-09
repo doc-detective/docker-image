@@ -1,19 +1,15 @@
 {
   "name": "doc-detective-docker-image",
-  "version": "3.0.4-builder.0",
+  "version": "3.0.4",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
-    "watch-linux": "nodemon --exec \"npm run build-linux-dev --no-cache\" --ext js,Dockerfile",
-    "test-linux": "mocha test/linux.test.js",
-    "build-linux": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux.Dockerfile -t docdetective/docdetective:latest -t docdetective/docdetective:latest-linux -t docdetective/docdetective:linux -t docdetective/docdetective:$PACKAGE_VERSION -t docdetective/docdetective:$PACKAGE_VERSION-linux . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
-    "build-linux-dev": "PACKAGE_VERSION=$(jq -r .version package.json) && docker build -f ./linux.Dockerfile -t docdetective/docdetective:dev . --build-arg PACKAGE_VERSION=$PACKAGE_VERSION",
-    "postbuild-linux": "npm run test-linux",
+    "build": "node scripts/build.js",
+    "rebuild": "npm run build -- --no-cache",
+    "watch": "nodemon --exec \"npm run rebuild\" --ext js,Dockerfile",
     "push-linux": "PACKAGE_VERSION=$(jq -r .version package.json) && docker push docdetective/docdetective:latest && docker push docdetective/docdetective:$PACKAGE_VERSION && docker push docdetective/docdetective:$PACKAGE_VERSION-linux",
     "watch-windows": "nodemon --exec \"npm run build-windows-dev --no-cache\" --ext js,Dockerfile",
-    "test-windows": "mocha test/windows.test.js",
-    "build-windows": "set \"DOCKER_BUILDKIT=0\" && for /f \"tokens=2 delims=:\" %a in ('findstr /C:\"version\" package.json') do @set PACKAGE_VERSION=%a && set PACKAGE_VERSION=%PACKAGE_VERSION:~2,-2% && docker build -f ./windows.Dockerfile -t docdetective/docdetective:latest-windows -t docdetective/docdetective:%PACKAGE_VERSION%-windows -t docdetective/docdetective:windows . --build-arg PACKAGE_VERSION=%PACKAGE_VERSION%",
-    "build-windows-dev": "set \"DOCKER_BUILDKIT=0\" && for /f \"tokens=2 delims=:\" %a in ('findstr /C:\"version\" package.json') do @set PACKAGE_VERSION=%a && set PACKAGE_VERSION=%PACKAGE_VERSION:~2,-2% && docker build -f ./windows.Dockerfile -t docdetective/docdetective:windows-dev . --build-arg PACKAGE_VERSION=%PACKAGE_VERSION%",
-    "postbuild-windows": "npm run test-windows",
+    "test": "mocha test/*.test.js",
+    "postbuild": "npm run test",
     "push-windows": "set \"DOCKER_BUILDKIT=0\" && for /f \"tokens=2 delims=:\" %a in ('findstr /C:\"version\" package.json') do @set PACKAGE_VERSION=%a && set PACKAGE_VERSION=%PACKAGE_VERSION:~2,-2% && docker push docdetective/docdetective:latest-windows && docker push docdetective/docdetective:windows"
   },
   "repository": {

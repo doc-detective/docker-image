@@ -6,6 +6,16 @@ const artifactPath = path.resolve(__dirname, "./artifacts");
 const outputFile = path.resolve(artifactPath, "results.json");
 const { exec } = require("child_process");
 
+let os;
+let internalPath;
+if (process.platform === "win32") {
+  os = "windows";
+  internalPath = path.join("C:", "app");
+} else if (process.platform === "linux") {
+  os = "linux";
+  internalPath = path.join("/","app");
+}
+  
 // // Create a server with custom options
 // const server = createServer({
 //   port: 8080,
@@ -43,7 +53,7 @@ describe("Run tests sucessfully", async function () {
   it("All specs pass", async () => {
     return new Promise((resolve, reject) => {
       const runTests = exec(
-        `docker run --rm -v "${artifactPath}:C:\\app" docdetective/docdetective:windows -c ./config.json -i . -o ./results.json`
+        `docker run --rm -v "${artifactPath}:${internalPath}" docdetective/docdetective:${os} -c ./config.json -i . -o ./results.json`
       );
       
       runTests.stdout.on("data", (data) => {
