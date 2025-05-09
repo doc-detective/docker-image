@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/server:ltsc2025 AS system
+FROM mcr.microsoft.com/windows/server:ltsc2022 AS system
 ARG PACKAGE_VERSION
 ARG DOC_DETECTIVE_VERSION=latest
 
