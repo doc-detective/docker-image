@@ -8,7 +8,7 @@
     "watch": "nodemon --exec \"npm run rebuild\" --ext js,Dockerfile",
     "test": "mocha test/*.test.js",
     "postbuild": "npm run test",
-    "prepush": "npm run build",
+    "prepush": "npm run rebuild",
     "push": "node scripts/push.js"
   },
   "repository": {
