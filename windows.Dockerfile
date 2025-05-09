@@ -1,23 +1,26 @@
-FROM mcr.microsoft.com/windows/servercore:ltsc2019 AS system
+FROM mcr.microsoft.com/windows:ltsc2019 AS system
 ARG PACKAGE_VERSION
 ARG DOC_DETECTIVE_VERSION=latest
 
-LABEL authors="Doc Detective"
-LABEL description="The official Docker image for Doc Detective. Keep your docs accurate with ease."
-LABEL version=$PACKAGE_VERSION
-LABEL maintainer="hawkeyexl@gmail.com"
-LABEL license="AGPL-3.0"
-LABEL homepage="https://www.doc-detective.com"
-LABEL repository="https://github.com/doc-detective/docker-image"
-LABEL source="https://github.com/doc-detective/docker-image"
-LABEL documentation="https://www.doc-detective.com"
-LABEL vendor="Doc Detective"
+LABEL authors="Doc Detective" \
+    description="The official Docker image for Doc Detective. Keep your docs accurate with ease." \
+    version=$PACKAGE_VERSION \
+    maintainer="manny@doc-detective.com" \
+    license="AGPL-3.0" \
+    homepage="https://www.doc-detective.com" \
+    repository="https://github.com/doc-detective/docker-image" \
+    source="https://github.com/doc-detective/docker-image" \
+    documentation="https://www.doc-detective.com" \
+    vendor="Doc Detective"
 
 # Set environment container to trigger container-based behaviors
 ENV CONTAINER=true
 
-# Set up PowerShell with proper error handling
+# Set up PowerShell with proper error handling and execution policy
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Set PowerShell execution policy to allow scripts to run
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force
 
 # Configure TLS for secure downloads
 RUN [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
@@ -32,12 +35,14 @@ RUN $NodeJsUrl = 'https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi'; \
 # Add Node to PATH and verify installation
 RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
     [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
+    Set-ExecutionPolicy Bypass -Scope Process -Force; \
     node -v; \
     npm -v; \
     npm install -g npm@latest
 
 # Install Doc Detective from NPM
-RUN npm install -g doc-detective@$env:DOC_DETECTIVE_VERSION
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    npm install -g doc-detective@$env:DOC_DETECTIVE_VERSION
 
 # Create app directory
 WORKDIR /app
@@ -45,5 +50,6 @@ WORKDIR /app
 # Add entrypoint command base
 ENTRYPOINT ["cmd.exe", "/c", "npx doc-detective"]
 
+# ENTRYPOINT ["cmd.exe"]
 # Set default command
 CMD []
