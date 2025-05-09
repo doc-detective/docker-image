@@ -6,11 +6,10 @@
     "build": "node scripts/build.js",
     "rebuild": "npm run build -- --no-cache",
     "watch": "nodemon --exec \"npm run rebuild\" --ext js,Dockerfile",
-    "push-linux": "PACKAGE_VERSION=$(jq -r .version package.json) && docker push docdetective/docdetective:latest && docker push docdetective/docdetective:$PACKAGE_VERSION && docker push docdetective/docdetective:$PACKAGE_VERSION-linux",
-    "watch-windows": "nodemon --exec \"npm run build-windows-dev --no-cache\" --ext js,Dockerfile",
     "test": "mocha test/*.test.js",
     "postbuild": "npm run test",
-    "push-windows": "set \"DOCKER_BUILDKIT=0\" && for /f \"tokens=2 delims=:\" %a in ('findstr /C:\"version\" package.json') do @set PACKAGE_VERSION=%a && set PACKAGE_VERSION=%PACKAGE_VERSION:~2,-2% && docker push docdetective/docdetective:latest-windows && docker push docdetective/docdetective:windows"
+    "prepush": "npm run build",
+    "push": "node scripts/push.js"
   },
   "repository": {
     "type": "git",
