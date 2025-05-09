@@ -37,7 +37,7 @@ jobs:
           docker info
 
       - name: Build and Push Docker Images
-        run: npm run build ${{ inputs.no_cache && '--no-cache' || '' }}
+        run: npm run build -- --pull ${{ inputs.no_cache && '--no-cache' || '' }}
 
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request'

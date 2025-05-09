@@ -3,6 +3,9 @@ const { execSync } = require("child_process");
 const path = require("path");
 const packageJson = require("../package.json");
 
+// Get arguments from command line
+const args = process.argv.slice(2);
+
 // Get version from package.json
 const version = packageJson.version;
 console.log(`Building Docker image with version: ${version}`);
@@ -37,12 +40,14 @@ const tagArgs = tags
   .join(" ");
 console.log(`Tag arguments: ${tagArgs}`);
 
+let pullOption = "";
+if (args.includes("--pull")) pullOption = "--pull ";
+
 // Build the Docker command
-let dockerCommand = `docker build -f ./${os}.Dockerfile ${tagArgs} . --build-arg PACKAGE_VERSION=${version}`;
+let dockerCommand = `docker build ${pullOption} -f ./${os}.Dockerfile ${tagArgs} . --build-arg PACKAGE_VERSION=${version}`;
 
 // Add --no-cache flag if requested
 // Check if --no-cache is passed as an argument
-const args = process.argv.slice(2);
 const useNoCache = args.includes("--no-cache");
 if (useNoCache) {
   console.log("Using --no-cache option");
