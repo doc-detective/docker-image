@@ -4,6 +4,7 @@ on:
   repository_dispatch:
     types:
       - build-push
+  pull_request:
   workflow_dispatch:
     inputs:
       no_cache:
