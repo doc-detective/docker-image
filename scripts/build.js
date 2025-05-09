@@ -20,10 +20,10 @@ if (process.platform === "win32") {
   tags = ["windows", "latest-windows", `${version}-windows`];
   envVariables.DOCKER_BUILDKIT = 0;
   // Pull the latest Windows base image
-  console.log("Pulling Windows base image...");
-  execSync("docker pull mcr.microsoft.com/windows:ltsc2019", {
-    stdio: "inherit",
-  });
+//   console.log("Pulling Windows base image...");
+//   execSync("docker pull mcr.microsoft.com/windows:ltsc2019", {
+//     stdio: "inherit",
+//   });
 } else if (process.platform === "linux") {
   os = "linux";
   tags = ["linux", "latest", "latest-linux", version, `${version}-linux`];

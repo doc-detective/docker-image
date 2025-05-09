@@ -32,8 +32,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           echo "Switching to Windows Docker Daemon"
-          docker context use default
-          docker context ls
+          for /f "tokens=1" %i in ('docker context ls ^| findstr "windows"') do docker context use %i
           docker info
 
       - name: Build and Push Docker Images
