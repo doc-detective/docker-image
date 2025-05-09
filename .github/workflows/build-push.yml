@@ -32,7 +32,8 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           echo "Switching to Windows Docker Daemon"
-          for /f "tokens=1" %i in ('docker context ls ^| findstr "windows"') do docker context use %i
+          $contextName = docker context ls | Select-String -Pattern "windows" | ForEach-Object { $_.ToString().Trim() -split '\s+' | Select-Object -First 1 }
+          docker context use $contextName
           docker info
 
       - name: Build and Push Docker Images
