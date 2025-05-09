@@ -19,17 +19,9 @@ if (process.platform === "win32") {
   os = "windows";
   tags = ["windows", "latest-windows", `${version}-windows`];
   envVariables.DOCKER_BUILDKIT = 0;
-  // Pull the latest Windows base image
-//   console.log("Pulling Windows base image...");
-//   execSync("docker pull mcr.microsoft.com/windows:ltsc2019", {
-//     stdio: "inherit",
-//   });
-} else if (process.platform === "linux") {
+} else {
   os = "linux";
   tags = ["linux", "latest", "latest-linux", version, `${version}-linux`];
-} else {
-  console.error("Unsupported platform:", process.platform);
-  process.exit(1);
 }
 console.log(`Detected OS: ${os}`);
 console.log(`Tags: ${tags}`);

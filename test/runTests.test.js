@@ -11,7 +11,7 @@ let internalPath;
 if (process.platform === "win32") {
   os = "windows";
   internalPath = path.join("C:", "app");
-} else if (process.platform === "linux") {
+} else {
   os = "linux";
   internalPath = path.join("/","app");
 }
