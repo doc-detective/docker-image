@@ -29,7 +29,15 @@ RUN [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePoin
 RUN $NodeJsUrl = 'https://nodejs.org/dist/v22.15.0/node-v22.15.0-x64.msi'; \
     $NodeJsInstaller = 'C:\node-installer.msi'; \
     (New-Object System.Net.WebClient).DownloadFile($NodeJsUrl, $NodeJsInstaller); \
+    # Verify checksum
+    $shaText = (Invoke-RestMethod 'https://nodejs.org/dist/v22.15.0/SHASUMS256.txt'); \
+    $expected = ($shaText | Select-String 'node-v22.15.0-x64.msi').Line.Split(' ')[0]; \
+    if ((Get-FileHash -Path $NodeJsInstaller -Algorithm SHA256).Hash -ne $expected) { \
+      Write-Error 'Node.js installer checksum mismatch' -ErrorAction Stop; \
+    } \
+    # Install Node.js silently
     Start-Process -FilePath 'msiexec.exe' -ArgumentList '/i', "$NodeJsInstaller", '/quiet', '/norestart' -Wait; \
+    # Clean up installer
     Remove-Item -Path $NodeJsInstaller -Force
 
 # Add Node to PATH and verify installation
