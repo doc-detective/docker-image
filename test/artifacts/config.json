@@ -1,8 +1,19 @@
 {
-  "envVariables": "",
-  "input": ".",
-  "output": ".",
-  "recursive": true,
+  "runOn": [
+    {
+      "platforms": ["windows", "linux", "mac"],
+      "browsers": [
+        {
+          "name": "chrome",
+          "headless": false
+        },
+        {
+          "name": "firefox",
+          "headless": false
+        }
+      ]
+    }
+  ],
   "logLevel": "debug",
   "telemetry": {
     "send": false

@@ -83,7 +83,6 @@ describe("Run tests sucessfully", async function () {
           );
           console.log(JSON.stringify(result, null, 2));
           assert.equal(result.summary.specs.fail, 0);
-          assert.equal(result.summary.contexts.skipped, 0);
           fs.unlinkSync(outputFile);
           resolve();
         } catch (error) {
