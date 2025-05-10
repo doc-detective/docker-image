@@ -1,7 +1,6 @@
 # Builder stage to install packages and dependencies
 FROM node:22-slim AS runtime
-ARG DOC_DETECTIVE_VERSION=latest
-ARG PACKAGE_VERSION
+ARG PACKAGE_VERSION=latest
 
 # Set environment container to trigger container-based behaviors
 ENV CONTAINER=true \
@@ -31,7 +30,7 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Doc Detective from NPM
-RUN npm install -g doc-detective@$DOC_DETECTIVE_VERSION
+RUN npm install -g doc-detective@$PACKAGE_VERSION
 
 # Create app directory
 WORKDIR /app

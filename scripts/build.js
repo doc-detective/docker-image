@@ -1,14 +1,16 @@
 // Script to build Docker image with version from package.json
 const { execSync } = require("child_process");
-const path = require("path");
-const packageJson = require("../package.json");
 
 // Get arguments from command line
 const args = process.argv.slice(2);
 
-// Get version from package.json
-const version = packageJson.version;
-console.log(`Building Docker image with version: ${version}`);
+// Check if a custom version is specified with --version
+let version = "latest";
+const versionArgIndex = args.findIndex(arg => arg === '--version');
+if (versionArgIndex !== -1 && versionArgIndex + 1 < args.length) {
+  version = args[versionArgIndex + 1];
+  console.log(`Building Docker image with version: ${version}`);
+}
 
 let os;
 let tags;

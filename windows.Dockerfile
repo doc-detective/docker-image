@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/windows/server:ltsc2022 AS system
-ARG PACKAGE_VERSION
-ARG DOC_DETECTIVE_VERSION=latest
+ARG PACKAGE_VERSION=latest
 
 LABEL authors="Doc Detective" \
     description="The official Docker image for Doc Detective. Keep your docs accurate with ease." \
@@ -50,7 +49,7 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
 
 # Install Doc Detective from NPM
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
-    npm install -g doc-detective@$env:DOC_DETECTIVE_VERSION
+    npm install -g doc-detective@$env:PACKAGE_VERSION
 
 # Create app directory
 WORKDIR /app

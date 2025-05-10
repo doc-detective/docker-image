@@ -1,6 +1,6 @@
 {
   "name": "doc-detective-docker-image",
-  "version": "3.0.4",
+  "version": "1.1.0",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "build": "node scripts/build.js",
