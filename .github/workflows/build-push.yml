@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       no_cache:
-        description: 'Build without cache'
+        description: "Build without cache"
         type: boolean
         default: false
 
@@ -41,12 +41,20 @@ jobs:
           docker context use $contextName
           docker info
 
-      - name: Cache Docker images
+      - name: Cache Docker images (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: 'C:\ProgramData\Docker\windowsfilter'
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/windows.Dockerfile') }}
+
+      - name: Cache Docker images (Linux)
+        if: runner.os == 'Linux'
         uses: actions/cache@v4
         with:
           path: /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/windows.Dockerfile' && '**/linux.Dockerfile') }}
-          
+          key: ${{ runner.os }}-docker-${{ hashFiles('**/linux.Dockerfile') }}
+
       - name: Build and Push Docker Images
         run: npm run build -- ${{ inputs.no_cache && '--no-cache' || '' }}
 
@@ -54,8 +62,8 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push Docker image
         if: github.event_name != 'pull_request'
