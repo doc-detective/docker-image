@@ -1,13 +1,12 @@
 {
   "name": "doc-detective-docker-image",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Treat doc content as testable assertions to validate doc accuracy and product UX.",
   "scripts": {
     "build": "node scripts/build.js",
     "rebuild": "npm run build -- --no-cache",
     "watch": "nodemon --exec \"npm run rebuild\" --ext js,Dockerfile",
-    "test": "mocha test/*.test.js",
-    "postbuild": "npm run test"
+    "test": "mocha test/*.test.js"
   },
   "repository": {
     "type": "git",

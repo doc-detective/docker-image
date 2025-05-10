@@ -61,8 +61,11 @@ jobs:
           path: /var/lib/docker
           key: ${{ runner.os }}-docker-${{ hashFiles('**/linux.Dockerfile') }}
 
-      - name: Build and Push Docker Images
-        run: npm run build -- --version ${{ github.event.client_payload.version || inputs.version || 'latest' }} ${{ inputs.no_cache && '--no-cache' || '' }}
+      - name: Build Docker Image
+        run: npm run build -- --version=${{ github.event.client_payload.version || inputs.version || 'latest' }} ${{ inputs.no_cache && '--no-cache' || '' }}
+
+      - name: Post-build Test
+        run: npm run test -- --version=${{ github.event.client_payload.version || inputs.version || 'latest' }}
 
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request' && inputs.version != 'latest'

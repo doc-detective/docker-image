@@ -6,11 +6,13 @@ const args = process.argv.slice(2);
 
 // Check if a custom version is specified with --version
 let version = "latest";
-const versionArgIndex = args.findIndex(arg => arg === '--version');
-if (versionArgIndex !== -1 && versionArgIndex + 1 < args.length) {
-  version = args[versionArgIndex + 1];
-  console.log(`Building Docker image with version: ${version}`);
+const versionArg = args.find(
+  (arg) => arg.startsWith("--version=") || arg.startsWith("-v=")
+);
+if (versionArg) {
+  version = versionArg.split("=")[1];
 }
+console.log(`Building Docker image with version: ${version}`);
 
 let os;
 let tags;

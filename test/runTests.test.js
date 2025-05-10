@@ -6,6 +6,11 @@ const artifactPath = path.resolve(__dirname, "./artifacts");
 const outputFile = path.resolve(artifactPath, "results.json");
 const { exec } = require("child_process");
 
+// Parse command line arguments
+const args = process.argv.slice(2);
+const versionArg = args.find(arg => arg.startsWith('--version=') || arg.startsWith('-v='));
+const version = versionArg ? versionArg.split('=')[1] : 'latest';
+
 let os;
 let internalPath;
 if (process.platform === "win32") {
@@ -50,10 +55,9 @@ if (process.platform === "win32") {
 describe("Run tests sucessfully", async function () {
   // Set indefinite timeout
   this.timeout(0);
-  it("All specs pass", async () => {
-    return new Promise((resolve, reject) => {
+  it("All specs pass", async () => {    return new Promise((resolve, reject) => {
       const runTests = exec(
-        `docker run --rm -v "${artifactPath}:${internalPath}" docdetective/docdetective:${os} -c ./config.json -i . -o ./results.json`
+        `docker run --rm -v "${artifactPath}:${internalPath}" docdetective/docdetective:${version}-${os} -c ./config.json -i . -o ./results.json`
       );
       
       runTests.stdout.on("data", (data) => {
