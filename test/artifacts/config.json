@@ -5,11 +5,11 @@
       "browsers": [
         {
           "name": "chrome",
-          "headless": false
+          "headless": true
         },
         {
           "name": "firefox",
-          "headless": false
+          "headless": true
         }
       ]
     }
