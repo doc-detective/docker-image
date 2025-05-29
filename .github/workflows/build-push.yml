@@ -47,20 +47,6 @@ jobs:
           docker context use $contextName
           docker info
 
-      - name: Cache Docker images (Windows)
-        if: runner.os == 'Windows'
-        uses: actions/cache@v4
-        with:
-          path: 'C:\ProgramData\Docker\windowsfilter'
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/windows.Dockerfile') }}
-
-      - name: Cache Docker images (Linux)
-        if: runner.os == 'Linux'
-        uses: actions/cache@v4
-        with:
-          path: /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/linux.Dockerfile') }}
-
       - name: Build Docker Image
         run: npm run build -- --version=${{ github.event.client_payload.version || inputs.version || 'latest' }} ${{ inputs.no_cache && '--no-cache' || '' }}
 
