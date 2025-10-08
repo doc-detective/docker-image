@@ -51,6 +51,35 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     npm install -g doc-detective@$env:PACKAGE_VERSION
 
+# Download and install Java (OpenJDK)
+RUN $JavaUrl = 'https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_windows-x64_bin.zip'; \
+    $JavaZip = 'C:\java.zip'; \
+    Write-Host 'Downloading Java...'; \
+    (New-Object System.Net.WebClient).DownloadFile($JavaUrl, $JavaZip); \
+    Write-Host 'Extracting Java...'; \
+    Expand-Archive -Path $JavaZip -DestinationPath 'C:\' -Force; \
+    Remove-Item -Path $JavaZip -Force
+
+# Add Java to PATH
+RUN $env:Path = 'C:\jdk-21.0.2\bin;' + $env:Path; \
+    [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
+    [Environment]::SetEnvironmentVariable('JAVA_HOME', 'C:\jdk-21.0.2', [System.EnvironmentVariableTarget]::Machine)
+
+# Download and install DITA-OT
+RUN $DitaVersion = '4.2.3'; \
+    $DitaUrl = "https://github.com/dita-ot/dita-ot/releases/download/$DitaVersion/dita-ot-$DitaVersion.zip"; \
+    $DitaZip = 'C:\dita-ot.zip'; \
+    Write-Host 'Downloading DITA-OT...'; \
+    (New-Object System.Net.WebClient).DownloadFile($DitaUrl, $DitaZip); \
+    Write-Host 'Extracting DITA-OT...'; \
+    Expand-Archive -Path $DitaZip -DestinationPath 'C:\' -Force; \
+    Move-Item -Path "C:\dita-ot-$DitaVersion" -Destination 'C:\dita-ot' -Force; \
+    Remove-Item -Path $DitaZip -Force
+
+# Add DITA-OT to PATH
+RUN $env:Path = 'C:\dita-ot\bin;' + $env:Path; \
+    [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine)
+
 # Create app directory
 WORKDIR /app
 
