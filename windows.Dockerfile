@@ -51,8 +51,14 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     npm install -g doc-detective@$env:PACKAGE_VERSION
 
-# Install Java using winget
-RUN winget install -e --id ojdkbuild.openjdk.11.jdk --silent --accept-package-agreements --accept-source-agreements
+# Download and install Java (OpenJDK 11)
+RUN $JavaUrl = 'https://github.com/ojdkbuild/ojdkbuild/releases/download/java-11.0.25.9-1/java-11-openjdk-11.0.25.9-1.windows.ojdkbuild.x86_64.msi'; \
+    $JavaInstaller = 'C:\java-installer.msi'; \
+    Write-Host 'Downloading Java...'; \
+    (New-Object System.Net.WebClient).DownloadFile($JavaUrl, $JavaInstaller); \
+    Write-Host 'Installing Java...'; \
+    Start-Process -FilePath 'msiexec.exe' -ArgumentList '/i', $JavaInstaller, '/quiet', '/norestart', 'ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome' -Wait; \
+    Remove-Item -Path $JavaInstaller -Force
 
 # Download and install DITA-OT
 RUN $DitaVersion = '4.3.4'; \
