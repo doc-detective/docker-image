@@ -51,24 +51,23 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     npm install -g doc-detective@$env:PACKAGE_VERSION
 
-# Download and install Java (Microsoft Build of OpenJDK 11)
-RUN $JavaUrl = 'https://aka.ms/download-jdk/microsoft-jdk-11.0.25-windows-x64.msi'; \
+# Download and install Java (Azul Zulu OpenJDK 11)
+RUN $JavaUrl = 'https://cdn.azul.com/zulu/bin/zulu11.76.21-ca-jdk11.0.25-win_x64.msi'; \
     $JavaInstaller = 'C:\java-installer.msi'; \
-    Write-Host 'Downloading Microsoft OpenJDK...'; \
+    Write-Host 'Downloading Azul Zulu OpenJDK 11...'; \
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
     Invoke-WebRequest -Uri $JavaUrl -OutFile $JavaInstaller -UseBasicParsing; \
-    Write-Host 'Installing Microsoft OpenJDK...'; \
-    Start-Process msiexec.exe -ArgumentList '/i', $JavaInstaller, '/quiet', '/norestart' -NoNewWindow -Wait; \
+    Write-Host 'Installing Java...'; \
+    Start-Process msiexec.exe -ArgumentList '/i', $JavaInstaller, '/quiet', '/norestart', 'INSTALLDIR=C:\Java\zulu11' -NoNewWindow -Wait; \
     Write-Host 'Java installation completed'; \
     Remove-Item -Path $JavaInstaller -Force
 
 # Add Java to PATH and set JAVA_HOME
-RUN $javaPath = Get-ChildItem -Path 'C:\Program Files\Microsoft' -Filter 'jdk-11*' -Directory | Select-Object -First 1 -ExpandProperty FullName; \
-    $env:JAVA_HOME = $javaPath; \
+RUN $env:JAVA_HOME = 'C:\Java\zulu11'; \
     [Environment]::SetEnvironmentVariable('JAVA_HOME', $env:JAVA_HOME, [System.EnvironmentVariableTarget]::Machine); \
-    $env:Path = "$env:JAVA_HOME\bin;" + $env:Path; \
+    $env:Path = 'C:\Java\zulu11\bin;' + $env:Path; \
     [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
-    Write-Host "Java HOME set to: $env:JAVA_HOME"; \
+    Write-Host "JAVA_HOME set to: $env:JAVA_HOME"; \
     java -version
 
 # Download and install DITA-OT
