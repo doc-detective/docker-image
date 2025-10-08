@@ -11,6 +11,7 @@ The official Docker image for Doc Detective, a documentation testing framework t
 
 - Pre-installed with Node.js and Doc Detective
 - Includes Google Chrome and Firefox for browser-based tests
+- Includes DITA Open Toolkit (DITA-OT) for DITA content transformation
 - Optimized for CI/CD pipelines and containerized environments
 - Simple volume mounting for working with your local test files
 
@@ -62,6 +63,20 @@ You can pass any Doc Detective arguments to the container:
 
 ```bash
 docker run --rm -v .:/app docdetective/docdetective --input tests.spec.json --output results.json
+```
+
+### Using DITA-OT
+
+The `dita` command is available in the container's PATH. To use DITA-OT directly, override the entrypoint:
+
+```bash
+docker run --rm --entrypoint "" -v .:/app docdetective/docdetective dita --version
+```
+
+For DITA transformations:
+
+```bash
+docker run --rm --entrypoint "" -v .:/app docdetective/docdetective dita -i /app/input.ditamap -f html5 -o /app/out
 ```
 
 ## Docker Tags
