@@ -36,7 +36,10 @@ RUN npm install -g doc-detective@$PACKAGE_VERSION
 
 # Install DITA-OT
 ARG DITA_OT_VERSION=4.2.3
-RUN curl -kL https://github.com/dita-ot/dita-ot/releases/download/${DITA_OT_VERSION}/dita-ot-${DITA_OT_VERSION}.zip -o /tmp/dita-ot.zip \
+RUN curl -fsSL https://github.com/dita-ot/dita-ot/releases/download/${DITA_OT_VERSION}/dita-ot-${DITA_OT_VERSION}.zip -o /tmp/dita-ot.zip \
+    && unzip /tmp/dita-ot.zip -d /opt \
+    && mv /opt/dita-ot-${DITA_OT_VERSION} /opt/dita-ot \
+    && rm /tmp/dita-ot.zip
     && unzip /tmp/dita-ot.zip -d /opt \
     && mv /opt/dita-ot-${DITA_OT_VERSION} /opt/dita-ot \
     && rm /tmp/dita-ot.zip
