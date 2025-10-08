@@ -20,7 +20,7 @@ describe("DITA-OT is installed", function () {
   
   it("dita --version returns valid output", async () => {
     return new Promise((resolve, reject) => {
-      const ditaVersionCmd = `docker run --rm docdetective/docdetective:${version}-${os} dita --version`;
+      const ditaVersionCmd = `docker run --rm --entrypoint "" docdetective/docdetective:${version}-${os} dita --version`;
       
       console.log(`Running: ${ditaVersionCmd}`);
       
