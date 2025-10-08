@@ -51,14 +51,24 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     npm install -g doc-detective@$env:PACKAGE_VERSION
 
-# Download and install Java (OpenJDK 11)
-RUN $JavaUrl = 'https://github.com/ojdkbuild/ojdkbuild/releases/download/java-11.0.25.9-1/java-11-openjdk-11.0.25.9-1.windows.ojdkbuild.x86_64.msi'; \
+# Download and install Java (Adoptium OpenJDK 11)
+RUN $JavaUrl = 'https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.25%2B9/OpenJDK11U-jdk_x64_windows_hotspot_11.0.25_9.msi'; \
     $JavaInstaller = 'C:\java-installer.msi'; \
     Write-Host 'Downloading Java...'; \
-    (New-Object System.Net.WebClient).DownloadFile($JavaUrl, $JavaInstaller); \
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri $JavaUrl -OutFile $JavaInstaller -UseBasicParsing; \
     Write-Host 'Installing Java...'; \
-    Start-Process -FilePath 'msiexec.exe' -ArgumentList '/i', $JavaInstaller, '/quiet', '/norestart', 'ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome' -Wait; \
+    Start-Process msiexec.exe -ArgumentList '/i', $JavaInstaller, '/quiet', '/norestart', 'ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome', 'INSTALLDIR=C:\Java\jdk-11' -NoNewWindow -Wait; \
+    Write-Host 'Java installation completed'; \
     Remove-Item -Path $JavaInstaller -Force
+
+# Add Java to PATH and set JAVA_HOME
+RUN $env:JAVA_HOME = 'C:\Java\jdk-11'; \
+    [Environment]::SetEnvironmentVariable('JAVA_HOME', $env:JAVA_HOME, [System.EnvironmentVariableTarget]::Machine); \
+    $env:Path = "$env:JAVA_HOME\bin;" + $env:Path; \
+    [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
+    Write-Host 'Java PATH configured'; \
+    java -version
 
 # Download and install DITA-OT
 RUN $DitaVersion = '4.3.4'; \
