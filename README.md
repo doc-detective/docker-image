@@ -65,20 +65,6 @@ You can pass any Doc Detective arguments to the container:
 docker run --rm -v .:/app docdetective/docdetective --input tests.spec.json --output results.json
 ```
 
-### Using DITA-OT
-
-The `dita` command is available in the container's PATH. To use DITA-OT directly, override the entrypoint:
-
-```bash
-docker run --rm --entrypoint "" -v .:/app docdetective/docdetective dita --version
-```
-
-For DITA transformations:
-
-```bash
-docker run --rm --entrypoint "" -v .:/app docdetective/docdetective dita -i /app/input.ditamap -f html5 -o /app/out
-```
-
 ## Docker Tags
 
 - `latest`: The most recent stable release
