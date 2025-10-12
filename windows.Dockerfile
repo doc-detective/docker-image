@@ -51,34 +51,37 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     npm install -g doc-detective@$env:PACKAGE_VERSION
 
-# Download and install Java (Azul Zulu OpenJDK 11)
-RUN $JavaUrl = 'https://cdn.azul.com/zulu/bin/zulu11.76.21-ca-jdk11.0.25-win_x64.msi'; \
-    $JavaInstaller = 'C:\java-installer.msi'; \
-    Write-Host 'Downloading Azul Zulu OpenJDK 11...'; \
+# Download and install Microsoft OpenJDK 11
+RUN $JavaVersion = '11.0.25'; \
+    $JavaBuild = '9'; \
+    $JavaUrl = 'https://aka.ms/download-jdk/microsoft-jdk-' + $JavaVersion + '-windows-x64.zip'; \
+    $JavaZip = 'C:\openjdk.zip'; \
+    Write-Host 'Downloading Microsoft OpenJDK 11...'; \
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
-    Invoke-WebRequest -Uri $JavaUrl -OutFile $JavaInstaller -UseBasicParsing; \
-    Write-Host 'Installing Java...'; \
-    Start-Process msiexec.exe -ArgumentList '/i', $JavaInstaller, '/quiet', '/norestart', 'INSTALLDIR=C:\Java\zulu11' -NoNewWindow -Wait; \
+    Invoke-WebRequest -Uri $JavaUrl -OutFile $JavaZip -UseBasicParsing; \
+    Write-Host 'Extracting OpenJDK...'; \
+    Expand-Archive -Path $JavaZip -DestinationPath 'C:\' -Force; \
+    Move-Item -Path ('C:\jdk-' + $JavaVersion + '+' + $JavaBuild) -Destination 'C:\openjdk' -Force; \
     Write-Host 'Java installation completed'; \
-    Remove-Item -Path $JavaInstaller -Force
+    Remove-Item -Path $JavaZip -Force
 
 # Add Java to PATH and set JAVA_HOME
-RUN $env:JAVA_HOME = 'C:\Java\zulu11'; \
+RUN $env:JAVA_HOME = 'C:\openjdk'; \
     [Environment]::SetEnvironmentVariable('JAVA_HOME', $env:JAVA_HOME, [System.EnvironmentVariableTarget]::Machine); \
-    $env:Path = 'C:\Java\zulu11\bin;' + $env:Path; \
+    $env:Path = 'C:\openjdk\bin;' + $env:Path; \
     [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
     Write-Host "JAVA_HOME set to: $env:JAVA_HOME"; \
     java -version
 
 # Download and install DITA-OT
 RUN $DitaVersion = '4.3.4'; \
-    $DitaUrl = "https://github.com/dita-ot/dita-ot/releases/download/$DitaVersion/dita-ot-$DitaVersion.zip"; \
+    $DitaUrl = \"https://github.com/dita-ot/dita-ot/releases/download/$DitaVersion/dita-ot-$DitaVersion.zip\"; \
     $DitaZip = 'C:\dita-ot.zip'; \
     Write-Host 'Downloading DITA-OT...'; \
     (New-Object System.Net.WebClient).DownloadFile($DitaUrl, $DitaZip); \
     Write-Host 'Extracting DITA-OT...'; \
     Expand-Archive -Path $DitaZip -DestinationPath 'C:\' -Force; \
-    Move-Item -Path "C:\dita-ot-$DitaVersion" -Destination 'C:\dita-ot' -Force; \
+    Move-Item -Path \"C:\dita-ot-$DitaVersion\" -Destination 'C:\dita-ot' -Force; \
     Remove-Item -Path $DitaZip -Force
 
 # Add DITA-OT to PATH
