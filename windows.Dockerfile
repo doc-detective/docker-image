@@ -51,17 +51,19 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     npm install -g doc-detective@$env:PACKAGE_VERSION
 
-# Download and install Microsoft OpenJDK 11
-RUN $JavaVersion = '11.0.25'; \
+# Download and install Microsoft OpenJDK 17
+RUN $JavaVersion = '17.0.14'; \
     $JavaBuild = '9'; \
     $JavaUrl = 'https://aka.ms/download-jdk/microsoft-jdk-' + $JavaVersion + '-windows-x64.zip'; \
     $JavaZip = 'C:\openjdk.zip'; \
-    Write-Host 'Downloading Microsoft OpenJDK 11...'; \
+    Write-Host 'Downloading Microsoft OpenJDK 17...'; \
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
     Invoke-WebRequest -Uri $JavaUrl -OutFile $JavaZip -UseBasicParsing; \
     Write-Host 'Extracting OpenJDK...'; \
-    Expand-Archive -Path $JavaZip -DestinationPath 'C:\' -Force; \
-    Move-Item -Path ('C:\jdk-' + $JavaVersion + '+' + $JavaBuild) -Destination 'C:\openjdk' -Force; \
+    Expand-Archive -Path $JavaZip -DestinationPath 'C:\temp-jdk' -Force; \
+    $ExtractedDir = Get-ChildItem -Path 'C:\temp-jdk' -Directory | Select-Object -First 1; \
+    Move-Item -Path $ExtractedDir.FullName -Destination 'C:\openjdk' -Force; \
+    Remove-Item -Path 'C:\temp-jdk' -Force -Recurse; \
     Write-Host 'Java installation completed'; \
     Remove-Item -Path $JavaZip -Force
 
@@ -75,18 +77,21 @@ RUN $env:JAVA_HOME = 'C:\openjdk'; \
 
 # Download and install DITA-OT
 RUN $DitaVersion = '4.3.4'; \
-    $DitaUrl = \"https://github.com/dita-ot/dita-ot/releases/download/$DitaVersion/dita-ot-$DitaVersion.zip\"; \
+    $DitaUrl = 'https://github.com/dita-ot/dita-ot/releases/download/' + $DitaVersion + '/dita-ot-' + $DitaVersion + '.zip'; \
     $DitaZip = 'C:\dita-ot.zip'; \
     Write-Host 'Downloading DITA-OT...'; \
-    (New-Object System.Net.WebClient).DownloadFile($DitaUrl, $DitaZip); \
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri $DitaUrl -OutFile $DitaZip -UseBasicParsing; \
     Write-Host 'Extracting DITA-OT...'; \
     Expand-Archive -Path $DitaZip -DestinationPath 'C:\' -Force; \
-    Move-Item -Path \"C:\dita-ot-$DitaVersion\" -Destination 'C:\dita-ot' -Force; \
+    Move-Item -Path ('C:\dita-ot-' + $DitaVersion) -Destination 'C:\dita-ot' -Force; \
     Remove-Item -Path $DitaZip -Force
 
-# Add DITA-OT to PATH
+# Add DITA-OT to PATH and verify installation
 RUN $env:Path = 'C:\dita-ot\bin;' + $env:Path; \
-    [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine)
+    [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
+    Write-Host 'DITA-OT installed. Verifying...'; \
+    dita --version
 
 # Create app directory
 WORKDIR /app
