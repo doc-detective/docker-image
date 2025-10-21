@@ -54,15 +54,15 @@ describe("DITA-OT is installed", function () {
         if (code !== 0) {
           reject(new Error(`Docker process exited with code ${code}. stderr: ${stderr}`));
         } else {
-          // Verify that output contains version information
-          // DITA-OT version output typically contains "DITA-OT version" or just the version number
-          const hasVersionInfo = stdout.length > 0 || stderr.includes("DITA-OT");
+          // Verify that output contains the exact DITA-OT version 4.3.4
+          const trimmedStdout = stdout.trim();
+          const trimmedStderr = stderr.trim();
           
-          if (hasVersionInfo || stdout.includes("4.") || stderr.includes("4.")) {
-            console.log("DITA-OT version command succeeded");
+          if (trimmedStdout.includes("4.3.4") || trimmedStderr.includes("4.3.4")) {
+            console.log("DITA-OT version 4.3.4 confirmed");
             resolve();
           } else {
-            reject(new Error(`Version output does not contain expected information. stdout: ${stdout}, stderr: ${stderr}`));
+            reject(new Error(`Version output does not contain expected version "4.3.4". stdout: ${trimmedStdout}, stderr: ${trimmedStderr}`));
           }
         }
       });
