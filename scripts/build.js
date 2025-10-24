@@ -14,12 +14,25 @@ if (versionArg) {
 }
 console.log(`Building Docker image with version: ${version}`);
 
+// Detect Docker container mode
+let dockerOSType;
+try {
+  dockerOSType = execSync('docker info --format "{{.OSType}}"', {
+    encoding: "utf8",
+  }).trim();
+  console.log(`Docker is running ${dockerOSType} containers`);
+} catch (error) {
+  console.error("Failed to detect Docker container mode:", error.message);
+  console.log("Falling back to process platform detection");
+  dockerOSType = process.platform === "win32" ? "windows" : "linux";
+}
+
 let os;
 let tags;
 let envVariables = {
   ...process.env,
 };
-if (process.platform === "win32") {
+if (dockerOSType === "windows") {
   os = "windows";
   tags = ["windows", "latest-windows", `${version}-windows`];
   envVariables.DOCKER_BUILDKIT = 0;
@@ -27,7 +40,7 @@ if (process.platform === "win32") {
   os = "linux";
   tags = ["linux", "latest", "latest-linux", version, `${version}-linux`];
 }
-console.log(`Detected OS: ${os}`);
+console.log(`Building for OS: ${os}`);
 console.log(`Tags: ${tags}`);
 
 // Construct '-t' arguments for Docker build
