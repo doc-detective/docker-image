@@ -1,0 +1,2 @@
+# Ignore specs that require a test server
+requires-server/

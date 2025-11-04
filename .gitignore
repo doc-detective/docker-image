@@ -130,3 +130,6 @@ dist
 .pnp.*
 
 results*.json
+test/artifacts/output/
+test/artifacts/*.png
+test/artifacts/static/
