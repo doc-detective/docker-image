@@ -110,7 +110,9 @@ RUN $PythonVersion = '3.13.1'; \
 
 # Add Python to PATH and verify installation
 RUN $PythonMajorMinor = [Environment]::GetEnvironmentVariable('PYTHON_MAJOR_MINOR', [System.EnvironmentVariableTarget]::Machine); \
-    $env:Path = "C:\Program Files\Python$PythonMajorMinor;C:\Program Files\Python$PythonMajorMinor\Scripts;" + $env:Path; \
+    $PythonPath = "C:\Program Files\Python$PythonMajorMinor"; \
+    $PythonScriptsPath = "C:\Program Files\Python$PythonMajorMinor\Scripts"; \
+    $env:Path = "$PythonPath;$PythonScriptsPath;" + $env:Path; \
     [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
     Write-Host 'Verifying Python installation...'; \
     python --version; \
