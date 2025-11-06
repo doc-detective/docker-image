@@ -45,6 +45,13 @@ RUN curl -kL https://github.com/dita-ot/dita-ot/releases/download/${DITA_OT_VERS
 # Add DITA-OT to PATH
 ENV PATH="/opt/dita-ot/bin:${PATH}"
 
+# Check versions of installed packages
+RUN node -v \
+    && npm -v \
+    && java -version \
+    && python3 --version \
+    && dita --version
+
 # Create app directory
 WORKDIR /app
 
