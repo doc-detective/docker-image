@@ -93,6 +93,25 @@ RUN $env:Path = 'C:\dita-ot\bin;' + $env:Path; \
     Write-Host 'DITA-OT installed. Verifying...'; \
     dita --version
 
+# Download and install Python
+RUN $PythonVersion = '3.13.1'; \
+    $PythonUrl = 'https://www.python.org/ftp/python/' + $PythonVersion + '/python-' + $PythonVersion + '-amd64.exe'; \
+    $PythonInstaller = 'C:\python-installer.exe'; \
+    Write-Host 'Downloading Python...'; \
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri $PythonUrl -OutFile $PythonInstaller -UseBasicParsing; \
+    Write-Host 'Installing Python...'; \
+    Start-Process -FilePath $PythonInstaller -ArgumentList '/quiet', 'InstallAllUsers=1', 'PrependPath=1', 'Include_test=0' -Wait; \
+    Write-Host 'Python installation completed'; \
+    Remove-Item -Path $PythonInstaller -Force
+
+# Add Python to PATH and verify installation
+RUN $env:Path = 'C:\Program Files\Python313;C:\Program Files\Python313\Scripts;' + $env:Path; \
+    [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
+    Write-Host 'Verifying Python installation...'; \
+    python --version; \
+    pip --version
+
 # Create app directory
 WORKDIR /app
 

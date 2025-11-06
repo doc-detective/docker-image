@@ -26,6 +26,7 @@ RUN apt update \
     libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 \
     libxtst6 ffmpeg wget xdg-utils \
     default-jre \
+    python3 python3-pip python3-venv \
     && update-ca-certificates \
     && apt autoclean -y \
     && apt autoremove -y \
