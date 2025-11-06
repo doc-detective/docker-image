@@ -10,6 +10,7 @@ The official Docker image for Doc Detective, a documentation testing framework t
 ## Features
 
 - Pre-installed with Node.js and Doc Detective
+- Includes Python 3 for Python-based testing and automation
 - Includes Google Chrome and Firefox for browser-based tests
 - Includes DITA Open Toolkit (DITA-OT) for DITA content transformation
 - Optimized for CI/CD pipelines and containerized environments
