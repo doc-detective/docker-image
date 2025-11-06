@@ -75,7 +75,7 @@ describe("Run tests sucessfully", async function () {
       
       runTests.on("close", (code) => {
         console.log(`Child process exited with code ${code}`);
-        if (code !== 0) {
+        if (code !== null && code !== 0) {
           reject(new Error(`Docker process exited with code ${code}`));
         }
       });

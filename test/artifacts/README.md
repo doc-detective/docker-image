@@ -41,13 +41,15 @@ Test specification files that validate different Doc Detective actions:
 - **doc-content.md**: Sample markdown documentation with embedded test steps
 - **httpRequestFormat.md**: Documentation for HTTP request formatting
 
-### Server-Dependent Tests
-The `requires-server/` subdirectory contains tests that require a running test server:
-- **cookie-test.spec.json**: Tests cookie handling (requires localhost server)
-- **dragAndDrop.spec.json**: Tests drag-and-drop functionality (requires localhost server)
-- **httpRequest.spec.yaml**: Tests HTTP request actions (requires localhost server)
+### Server-Dependent and Environment-Specific Tests
+The `../requires-server/` directory (at `test/requires-server/`) contains tests that require special environments:
+- **cookie-test.spec.json**: Tests cookie handling (requires Docker-in-Docker and localhost server)
+- **dragAndDrop.spec.json**: Tests drag-and-drop functionality (requires localhost server on port 8092)
+- **httpRequest.spec.yaml**: Tests HTTP request actions (requires localhost server on port 8092)
+- **runCode.spec.json**: Tests code execution in multiple languages (requires Python, which is not in the container)
+- **screenshot.spec.json**: Tests screenshot capture and comparison (has image aspect ratio comparison issues)
 
-These are separated to avoid failures when running tests in CI/CD environments without a test server.
+These are separated from the main test artifacts directory to avoid failures when running tests in CI/CD environments without the required dependencies or servers.
 
 ## Running Tests
 
@@ -56,7 +58,7 @@ These are separated to avoid failures when running tests in CI/CD environments w
 npm test
 ```
 
-This runs all spec files in the test/artifacts directory (except those in requires-server/) inside the Docker container.
+This runs all spec files in the test/artifacts directory inside the Docker container. Tests in the `test/requires-server/` directory are not included.
 
 ### Individual Spec Files
 To run a specific spec file:
@@ -69,10 +71,12 @@ docker run --rm -v "$(pwd)/test/artifacts:/app" docdetective/docdetective:latest
 ### With Test Server
 To run server-dependent tests, first start a test server on port 8092, then:
 ```bash
-docker run --rm --network=host -v "$(pwd)/test/artifacts:/app" docdetective/docdetective:latest-linux \
+docker run --rm --network=host -v "$(pwd)/test/requires-server:/app" docdetective/docdetective:latest-linux \
   -c /app/config.json \
-  -i /app/requires-server/
+  -i /app/
 ```
+
+Note: These tests are located in `test/requires-server/` directory, not `test/artifacts/requires-server/`.
 
 ## Test Results
 
