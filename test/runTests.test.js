@@ -75,20 +75,41 @@ describe("Run tests sucessfully", async function () {
       
       runTests.on("close", (code) => {
         console.log(`Child process exited with code ${code}`);
-        if (code !== 0) {
+        if (code !== null && code !== 0) {
           reject(new Error(`Docker process exited with code ${code}`));
         }
       });
       
       runTests.on("exit", () => {
         try {
-          const result = JSON.parse(
-            fs.readFileSync(outputFile, { encoding: "utf8" })
-          );
-          console.log(JSON.stringify(result, null, 2));
-          assert.equal(result.summary.specs.fail, 0);
-          fs.unlinkSync(outputFile);
-          resolve();
+          // Wait for output file to exist before reading
+          const maxWaitTime = 10000; // 10 seconds
+          const checkInterval = 100; // 100ms
+          let waitedTime = 0;
+          
+          const waitForFile = setInterval(() => {
+            if (fs.existsSync(outputFile)) {
+              clearInterval(waitForFile);
+              
+              try {
+                const result = JSON.parse(
+                  fs.readFileSync(outputFile, { encoding: "utf8" })
+                );
+                console.log(JSON.stringify(result, null, 2));
+                assert.equal(result.summary.specs.fail, 0);
+                fs.unlinkSync(outputFile);
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            } else {
+              waitedTime += checkInterval;
+              if (waitedTime >= maxWaitTime) {
+                clearInterval(waitForFile);
+                reject(new Error(`Timeout waiting for output file: ${outputFile}`));
+              }
+            }
+          }, checkInterval);
         } catch (error) {
           reject(error);
         }
