@@ -55,6 +55,10 @@ describe("Python is installed", function () {
           reject(new Error(`Docker process exited with code ${code}. stderr: ${stderr}`));
         } else {
           // Verify that output contains "Python" and a version number
+          // Note: We check for "Python 3." rather than specific versions because:
+          // - Linux uses Python from apt (currently 3.11.2)
+          // - Windows uses Python from official installer (currently 3.13.1)
+          // This flexible check ensures the test works across both platforms
           const trimmedStdout = stdout.trim();
           const trimmedStderr = stderr.trim();
           

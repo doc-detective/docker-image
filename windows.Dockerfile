@@ -102,7 +102,7 @@ RUN $PythonVersion = '3.13.1'; \
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
     Invoke-WebRequest -Uri $PythonUrl -OutFile $PythonInstaller -UseBasicParsing; \
     Write-Host 'Installing Python...'; \
-    Start-Process -FilePath $PythonInstaller -ArgumentList '/quiet', 'InstallAllUsers=1', 'PrependPath=1', 'Include_test=0' -Wait; \
+    Start-Process -FilePath $PythonInstaller -ArgumentList '/quiet', 'InstallAllUsers=1', 'PrependPath=0', 'Include_test=0' -Wait; \
     Write-Host 'Python installation completed'; \
     Remove-Item -Path $PythonInstaller -Force; \
     [Environment]::SetEnvironmentVariable('PYTHON_VERSION', $PythonVersion, [System.EnvironmentVariableTarget]::Machine); \
