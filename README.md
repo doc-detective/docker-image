@@ -9,14 +9,17 @@ The official Docker image for Doc Detective, a documentation testing framework t
 
 ## Features
 
-- Pre-installed with Node.js and Doc Detective
-- Includes Python 3 for Python-based testing and automation
+- Pre-installed with
+  - Doc Detective
+  - Node.js
+  - Python 3
+  - Java Runtime Environment (JRE)
+  - DITA Open Toolkit (DITA-OT)
 - Includes Google Chrome and Firefox for browser-based tests
-- Includes DITA Open Toolkit (DITA-OT) for DITA content transformation
 - Optimized for CI/CD pipelines and containerized environments
 - Simple volume mounting for working with your local test files
 
-> **Note:** This image runs Doc Detective in a headless mode and isn't compatible with the `record` step. If you need to record test runs, use the [Doc Detective CLI](https://github.com/doc-detective/doc-detective) directly in your local environment.
+> **Note:** This image runs Doc Detective in a headless mode and isn't compatible with the `record` step. If you need to record test runs, use the [Doc Detective CLI](https://github.com/doc-detective/doc-detective) directly in your local or CI/CD environment.
 
 ## Usage
 
