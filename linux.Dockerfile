@@ -50,6 +50,7 @@ RUN node -v \
     && npm -v \
     && java -version \
     && python3 --version \
+    && pip3 --version \
     && dita --version
 
 # Create app directory
