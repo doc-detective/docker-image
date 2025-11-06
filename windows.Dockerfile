@@ -95,6 +95,7 @@ RUN $env:Path = 'C:\dita-ot\bin;' + $env:Path; \
 
 # Download and install Python
 RUN $PythonVersion = '3.13.1'; \
+    $PythonMajorMinor = ($PythonVersion -split '\.')[0..1] -join ''; \
     $PythonUrl = 'https://www.python.org/ftp/python/' + $PythonVersion + '/python-' + $PythonVersion + '-amd64.exe'; \
     $PythonInstaller = 'C:\python-installer.exe'; \
     Write-Host 'Downloading Python...'; \
@@ -103,10 +104,13 @@ RUN $PythonVersion = '3.13.1'; \
     Write-Host 'Installing Python...'; \
     Start-Process -FilePath $PythonInstaller -ArgumentList '/quiet', 'InstallAllUsers=1', 'PrependPath=1', 'Include_test=0' -Wait; \
     Write-Host 'Python installation completed'; \
-    Remove-Item -Path $PythonInstaller -Force
+    Remove-Item -Path $PythonInstaller -Force; \
+    [Environment]::SetEnvironmentVariable('PYTHON_VERSION', $PythonVersion, [System.EnvironmentVariableTarget]::Machine); \
+    [Environment]::SetEnvironmentVariable('PYTHON_MAJOR_MINOR', $PythonMajorMinor, [System.EnvironmentVariableTarget]::Machine)
 
 # Add Python to PATH and verify installation
-RUN $env:Path = 'C:\Program Files\Python313;C:\Program Files\Python313\Scripts;' + $env:Path; \
+RUN $PythonMajorMinor = [Environment]::GetEnvironmentVariable('PYTHON_MAJOR_MINOR', [System.EnvironmentVariableTarget]::Machine); \
+    $env:Path = "C:\Program Files\Python$PythonMajorMinor;C:\Program Files\Python$PythonMajorMinor\Scripts;" + $env:Path; \
     [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
     Write-Host 'Verifying Python installation...'; \
     python --version; \
