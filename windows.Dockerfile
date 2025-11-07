@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/windows/server:ltsc2022 AS system
 ARG PACKAGE_VERSION=latest
+ARG PYTHON_VERSION=3.13.1
 
 LABEL authors="Doc Detective" \
     description="The official Docker image for Doc Detective. Keep your docs accurate with ease." \
@@ -94,7 +95,7 @@ RUN $env:Path = 'C:\dita-ot\bin;' + $env:Path; \
     dita --version
 
 # Download and install Python
-RUN $PythonVersion = '3.13.1'; \
+RUN $PythonVersion = $env:PYTHON_VERSION; \
     $PythonMajorMinor = ($PythonVersion -split '\.')[0..1] -join ''; \
     $PythonUrl = 'https://www.python.org/ftp/python/' + $PythonVersion + '/python-' + $PythonVersion + '-amd64.exe'; \
     $PythonInstaller = 'C:\python-installer.exe'; \
@@ -107,7 +108,7 @@ RUN $PythonVersion = '3.13.1'; \
     Remove-Item -Path $PythonInstaller -Force
 
 # Add Python to PATH and verify installation
-RUN $PythonVersion = '3.13.1'; \
+RUN $PythonVersion = $env:PYTHON_VERSION; \
     $PythonMajorMinor = ($PythonVersion -split '\.')[0..1] -join ''; \
     $PythonPath = "C:\Program Files\Python$PythonMajorMinor"; \
     $PythonScriptsPath = "C:\Program Files\Python$PythonMajorMinor\Scripts"; \
