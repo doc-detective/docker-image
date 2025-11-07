@@ -104,12 +104,11 @@ RUN $PythonVersion = '3.13.1'; \
     Write-Host 'Installing Python...'; \
     Start-Process -FilePath $PythonInstaller -ArgumentList '/quiet', 'InstallAllUsers=1', 'PrependPath=0', 'Include_test=0' -Wait; \
     Write-Host 'Python installation completed'; \
-    Remove-Item -Path $PythonInstaller -Force; \
-    [Environment]::SetEnvironmentVariable('PYTHON_VERSION', $PythonVersion, [System.EnvironmentVariableTarget]::Machine); \
-    [Environment]::SetEnvironmentVariable('PYTHON_MAJOR_MINOR', $PythonMajorMinor, [System.EnvironmentVariableTarget]::Machine)
+    Remove-Item -Path $PythonInstaller -Force
 
 # Add Python to PATH and verify installation
-RUN $PythonMajorMinor = [Environment]::GetEnvironmentVariable('PYTHON_MAJOR_MINOR', [System.EnvironmentVariableTarget]::Machine); \
+RUN $PythonVersion = '3.13.1'; \
+    $PythonMajorMinor = ($PythonVersion -split '\.')[0..1] -join ''; \
     $PythonPath = "C:\Program Files\Python$PythonMajorMinor"; \
     $PythonScriptsPath = "C:\Program Files\Python$PythonMajorMinor\Scripts"; \
     $env:Path = "$PythonPath;$PythonScriptsPath;" + $env:Path; \
