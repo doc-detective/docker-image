@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/windows/server:ltsc2022 AS system
 ARG PACKAGE_VERSION=latest
+ARG PYTHON_VERSION=3.13.1
 
 LABEL authors="Doc Detective" \
     description="The official Docker image for Doc Detective. Keep your docs accurate with ease." \
@@ -47,9 +48,29 @@ RUN $env:Path = 'C:\Program Files\nodejs;' + $env:Path; \
     npm -v; \
     npm install -g npm@latest
 
-# Install Doc Detective from NPM
-RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
-    npm install -g doc-detective@$env:PACKAGE_VERSION
+    # Download and install Python
+RUN $PythonVersion = $env:PYTHON_VERSION; \
+    $PythonMajorMinor = ($PythonVersion -split '\.')[0..1] -join ''; \
+    $PythonUrl = 'https://www.python.org/ftp/python/' + $PythonVersion + '/python-' + $PythonVersion + '-amd64.exe'; \
+    $PythonInstaller = 'C:\python-installer.exe'; \
+    Write-Host 'Downloading Python...'; \
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri $PythonUrl -OutFile $PythonInstaller -UseBasicParsing; \
+    Write-Host 'Installing Python...'; \
+    Start-Process -FilePath $PythonInstaller -ArgumentList '/quiet', 'InstallAllUsers=1', 'PrependPath=0', 'Include_test=0' -Wait; \
+    Write-Host 'Python installation completed'; \
+    Remove-Item -Path $PythonInstaller -Force
+
+# Add Python to PATH and verify installation
+RUN $PythonVersion = $env:PYTHON_VERSION; \
+    $PythonMajorMinor = ($PythonVersion -split '\.')[0..1] -join ''; \
+    $PythonPath = 'C:\Program Files\Python' + $PythonMajorMinor; \
+    $PythonScriptsPath = 'C:\Program Files\Python' + $PythonMajorMinor + '\Scripts'; \
+    $env:Path = $PythonPath + ';' + $PythonScriptsPath + ';' + $env:Path; \
+    [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
+    Write-Host 'Verifying Python installation...'; \
+    python --version; \
+    pip --version;
 
 # Download and install Microsoft OpenJDK 17
 RUN $JavaVersion = '17.0.14'; \
@@ -92,6 +113,10 @@ RUN $env:Path = 'C:\dita-ot\bin;' + $env:Path; \
     [Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine); \
     Write-Host 'DITA-OT installed. Verifying...'; \
     dita --version
+
+# Install Doc Detective from NPM
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    npm install -g doc-detective@$env:PACKAGE_VERSION
 
 # Create app directory
 WORKDIR /app
