@@ -86,7 +86,7 @@ describe("Run tests successfully", async function () {
         handleCompletion(() => {
           console.log(`Child process closed with code ${code} and signal ${signal}`);
           
-          if (signal !== null && signal !== undefined) {
+          if (signal != null) {
             reject(new Error(`Docker process terminated by signal ${signal}`));
             return;
           }
