@@ -5,9 +5,6 @@ on:
     types:
       - build-push
   pull_request:
-    branches:
-      - main
-      - rc
   workflow_dispatch:
     inputs:
       version:
