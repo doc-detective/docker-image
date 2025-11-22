@@ -66,7 +66,8 @@ describe("Run tests successfully", async function () {
       };
       
       const runTests = exec(
-        `docker run --rm -v "${artifactPath}:${internalPath}" docdetective/docdetective:${version}-${os} -c ./config.json -i . -o ./results.json`
+        `docker run --rm --memory=2g --cpus=2 -v "${artifactPath}:${internalPath}" docdetective/docdetective:${version}-${os} -c ./config.json -i . -o ./results.json`,
+        { maxBuffer: 10 * 1024 * 1024 } // 10MB buffer for output
       );
       
       runTests.stdout.on("data", (data) => {
