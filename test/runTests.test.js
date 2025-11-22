@@ -56,6 +56,7 @@ describe("Run tests sucessfully", async function () {
   // Set indefinite timeout
   this.timeout(0);
   it("All specs pass", async () => {    return new Promise((resolve, reject) => {
+      let hasExited = false;
       const runTests = exec(
         `docker run --rm -v "${artifactPath}:${internalPath}" docdetective/docdetective:${version}-${os} -c ./config.json -i . -o ./results.json`
       );
@@ -70,17 +71,23 @@ describe("Run tests sucessfully", async function () {
       
       runTests.on("error", (error) => {
         console.error(`Error: ${error.message}`);
-        reject(error);
-      });
-      
-      runTests.on("close", (code) => {
-        console.log(`Child process exited with code ${code}`);
-        if (code !== null && code !== 0) {
-          reject(new Error(`Docker process exited with code ${code}`));
+        if (!hasExited) {
+          hasExited = true;
+          reject(error);
         }
       });
       
-      runTests.on("exit", () => {
+      runTests.on("exit", (code) => {
+        if (hasExited) return;
+        hasExited = true;
+        
+        console.log(`Child process exited with code ${code}`);
+        
+        if (code !== null && code !== 0) {
+          reject(new Error(`Docker process exited with code ${code}`));
+          return;
+        }
+        
         try {
           const result = JSON.parse(
             fs.readFileSync(outputFile, { encoding: "utf8" })
