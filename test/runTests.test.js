@@ -66,7 +66,8 @@ describe("Run tests successfully", async function () {
       };
       
       const runTests = exec(
-        `docker run --rm -v "${artifactPath}:${internalPath}" docdetective/docdetective:${version}-${os} -c ./config.json -i . -o ./results.json`
+        `docker run --rm --memory=2g --cpus=2 -v "${artifactPath}:${internalPath}" docdetective/docdetective:${version}-${os} -c ./config.json -i . -o ./results.json`,
+        { maxBuffer: 10 * 1024 * 1024 } // 10MB buffer for output
       );
       
       runTests.stdout.on("data", (data) => {
@@ -82,9 +83,14 @@ describe("Run tests successfully", async function () {
         handleCompletion(() => reject(error));
       });
       
-      runTests.on("close", (code) => {
+      runTests.on("close", (code, signal) => {
         handleCompletion(() => {
-          console.log(`Child process closed with code ${code}`);
+          console.log(`Child process closed with code ${code} and signal ${signal}`);
+          
+          if (signal != null) {
+            reject(new Error(`Docker process terminated by signal ${signal}`));
+            return;
+          }
           
           if (code !== null && code !== 0) {
             reject(new Error(`Docker process exited with code ${code}`));
