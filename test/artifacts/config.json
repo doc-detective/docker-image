@@ -3,7 +3,7 @@
   "input": ".",
   "output": ".",
   "recursive": true,
-  "logLevel": "debug",
+  "logLevel": "info",
   "relativePathBase": "file",
   "runTests": {
     "input": ".",
@@ -17,19 +17,7 @@
     "contexts": [
       {
         "app": { "name": "chrome", "options": { "headless": true } },
-        "platforms": ["mac", "linux"]
-      },
-      {
-        "app": { "name": "chrome", "options": { "headless": true } },
-        "platforms": ["windows"]
-      },
-      {
-        "app": { "name": "firefox", "options": { "headless": true } },
-        "platforms": ["mac", "linux"]
-      },
-      {
-        "app": { "name": "firefox", "options": { "headless": true } },
-        "platforms": ["windows"]
+        "platforms": ["mac", "linux", "windows"]
       }
     ]
   },
