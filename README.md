@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This repository is archived. All code and functionality has been merged into [doc-detective/doc-detective](https://github.com/doc-detective/doc-detective).
+
 # <img src="https://github.com/doc-detective/doc-detective/blob/main/icon.png" width=50 style="vertical-align:middle;margin-bottom:7px"/> Doc Detective Docker Image
 
 ![Docker Image Version](https://img.shields.io/docker/v/docdetective/docdetective?sort=semver&color=orange)
